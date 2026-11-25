@@ -1,0 +1,306 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Global Hardened Primitives ---
+    function isValidId(id) {
+      return id is string
+        && id.size() >= 1
+        && id.size() <= 128
+        && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isBootstrapAdmin() {
+      return isVerifiedUser()
+        && request.auth.token.email == 'sanmitragosavi111@gmail.com';
+    }
+
+    function isStaffAdmin() {
+      return isVerifiedUser()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isAdmin() {
+      return isBootstrapAdmin() || isStaffAdmin();
+    }
+
+    // --- Validation Blueprints ---
+    function isValidEnquiry(data) {
+      return data.keys().hasAll([
+          'referenceCode',
+          'fullName',
+          'mobileNumber',
+          'city',
+          'requiredAmount',
+          'requirementType',
+          'preferredContact',
+          'message',
+          'consentAccepted',
+          'status',
+          'remarks',
+          'source',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'referenceCode',
+          'fullName',
+          'mobileNumber',
+          'email',
+          'city',
+          'requiredAmount',
+          'requirementType',
+          'preferredContact',
+          'message',
+          'consentAccepted',
+          'status',
+          'remarks',
+          'source',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.referenceCode is string
+        && data.referenceCode.size() >= 6
+        && data.referenceCode.size() <= 32
+        && data.referenceCode.matches('^SGF-[A-Z0-9\\-]+$')
+        && data.fullName is string
+        && data.fullName.size() >= 2
+        && data.fullName.size() <= 100
+        && data.mobileNumber is string
+        && data.mobileNumber.size() == 10
+        && data.mobileNumber.matches('^[6-9][0-9]{9}$')
+        && (!('email' in data) || (data.email is string && data.email.size() <= 120))
+        && data.city is string
+        && data.city.size() >= 2
+        && data.city.size() <= 80
+        && data.requiredAmount is string
+        && data.requiredAmount.size() >= 1
+        && data.requiredAmount.size() <= 40
+        && data.requirementType is string
+        && data.requirementType in [
+          'Secured Lending Solutions',
+          'Loan Against Eligible Pledged Assets',
+          'Short-Term Financial Assistance',
+          'Customer Consultation and Assistance'
+        ]
+        && data.preferredContact is string
+        && data.preferredContact in ['Phone Call', 'WhatsApp', 'Either']
+        && data.message is string
+        && data.message.size() <= 1000
+        && data.consentAccepted is bool
+        && data.consentAccepted == true
+        && data.status is string
+        && data.status in ['new', 'contacted', 'in_review', 'follow_up', 'closed']
+        && data.remarks is string
+        && data.remarks.size() <= 2000
+        && data.source is string
+        && data.source.size() >= 1
+        && data.source.size() <= 60
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidSiteSettings(data) {
+      return data.keys().hasAll([
+          'phoneDisplay',
+          'phoneHref',
+          'whatsappNumber',
+          'whatsappPrefillMessage',
+          'email',
+          'addressLine',
+          'cityRegion',
+          'workingHours',
+          'mapsEmbedUrl',
+          'instagramUrl',
+          'facebookUrl',
+          'linkedinUrl',
+          'heroHeadline',
+          'heroSubtitle',
+          'aboutIntro',
+          'complianceBannerNote',
+          'privacyPolicyCustomNote',
+          'termsCustomNote',
+          'disclaimerCustomNote',
+          'loanTermsCustomNote',
+          'googleAnalyticsId',
+          'googleSiteVerification',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'phoneDisplay',
+          'phoneHref',
+          'whatsappNumber',
+          'whatsappPrefillMessage',
+          'email',
+          'addressLine',
+          'cityRegion',
+          'workingHours',
+          'mapsEmbedUrl',
+          'instagramUrl',
+          'facebookUrl',
+          'linkedinUrl',
+          'heroHeadline',
+          'heroSubtitle',
+          'aboutIntro',
+          'complianceBannerNote',
+          'privacyPolicyCustomNote',
+          'termsCustomNote',
+          'disclaimerCustomNote',
+          'loanTermsCustomNote',
+          'googleAnalyticsId',
+          'googleSiteVerification',
+          'updatedAt'
+        ])
+        && data.phoneDisplay is string && data.phoneDisplay.size() >= 1 && data.phoneDisplay.size() <= 40
+        && data.phoneHref is string && data.phoneHref.size() <= 30
+        && data.whatsappNumber is string && data.whatsappNumber.size() <= 20
+        && data.whatsappPrefillMessage is string && data.whatsappPrefillMessage.size() >= 1 && data.whatsappPrefillMessage.size() <= 400
+        && data.email is string && data.email.size() >= 1 && data.email.size() <= 120
+        && data.addressLine is string && data.addressLine.size() >= 1 && data.addressLine.size() <= 300
+        && data.cityRegion is string && data.cityRegion.size() >= 1 && data.cityRegion.size() <= 120
+        && data.workingHours is string && data.workingHours.size() >= 1 && data.workingHours.size() <= 200
+        && data.mapsEmbedUrl is string && data.mapsEmbedUrl.size() <= 500
+        && data.instagramUrl is string && data.instagramUrl.size() <= 300
+        && data.facebookUrl is string && data.facebookUrl.size() <= 300
+        && data.linkedinUrl is string && data.linkedinUrl.size() <= 300
+        && data.heroHeadline is string && data.heroHeadline.size() >= 1 && data.heroHeadline.size() <= 180
+        && data.heroSubtitle is string && data.heroSubtitle.size() >= 1 && data.heroSubtitle.size() <= 400
+        && data.aboutIntro is string && data.aboutIntro.size() >= 1 && data.aboutIntro.size() <= 1200
+        && data.complianceBannerNote is string && data.complianceBannerNote.size() >= 1 && data.complianceBannerNote.size() <= 600
+        && data.privacyPolicyCustomNote is string && data.privacyPolicyCustomNote.size() <= 3000
+        && data.termsCustomNote is string && data.termsCustomNote.size() <= 3000
+        && data.disclaimerCustomNote is string && data.disclaimerCustomNote.size() <= 3000
+        && data.loanTermsCustomNote is string && data.loanTermsCustomNote.size() <= 3000
+        && data.googleAnalyticsId is string && data.googleAnalyticsId.size() <= 60
+        && data.googleSiteVerification is string && data.googleSiteVerification.size() <= 120
+        && data.updatedAt is timestamp
+        && data.updatedAt == request.time;
+    }
+
+    function isValidAdminProfile(data) {
+      return data.keys().hasAll(['email', 'displayName', 'role', 'createdAt'])
+        && data.keys().hasOnly(['email', 'displayName', 'role', 'createdAt'])
+        && data.email is string && data.email.size() >= 5 && data.email.size() <= 120
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 100
+        && data.role == 'admin'
+        && data.createdAt is timestamp;
+    }
+
+    // --- Collection: Customer Enquiries (Strict PII Isolation) ---
+    match /enquiries/{enquiryId} {
+      // Strictly verified admin access for reading customer PII
+      allow get: if isVerifiedUser() && isValidId(enquiryId) && isAdmin();
+      allow list: if isBootstrapAdmin();
+
+      // Public lead intake with strict schema, consent, initial state, and server timestamp validation
+      allow create: if isValidId(enquiryId)
+        && isValidEnquiry(incoming())
+        && incoming().status == 'new'
+        && incoming().remarks == ''
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      // Admin-only status & follow-up remarks updates; customer fields remain immutable
+      allow update: if isVerifiedUser()
+        && isValidId(enquiryId)
+        && isValidEnquiry(incoming())
+        && isAdmin()
+        && (existing().status != 'closed' || isAdmin())
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'remarks', 'updatedAt'])
+        && incoming().createdAt == existing().createdAt
+        && incoming().referenceCode == existing().referenceCode
+        && incoming().fullName == existing().fullName
+        && incoming().mobileNumber == existing().mobileNumber
+        && (!('email' in existing()) || incoming().email == existing().email)
+        && incoming().city == existing().city
+        && incoming().requiredAmount == existing().requiredAmount
+        && incoming().requirementType == existing().requirementType
+        && incoming().preferredContact == existing().preferredContact
+        && incoming().message == existing().message
+        && incoming().consentAccepted == existing().consentAccepted
+        && incoming().source == existing().source
+        && incoming().updatedAt == request.time;
+
+      allow delete: if isVerifiedUser() && isValidId(enquiryId) && isAdmin();
+    }
+
+    // --- Collection: Public Website Settings ---
+    match /site_settings/{settingId} {
+      allow get: if settingId == 'public';
+      allow list: if false;
+      allow create: if isVerifiedUser()
+        && settingId == 'public'
+        && isValidSiteSettings(incoming())
+        && isAdmin();
+      allow update: if isVerifiedUser()
+        && settingId == 'public'
+        && isValidSiteSettings(incoming())
+        && isAdmin()
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'phoneDisplay',
+          'phoneHref',
+          'whatsappNumber',
+          'whatsappPrefillMessage',
+          'email',
+          'addressLine',
+          'cityRegion',
+          'workingHours',
+          'mapsEmbedUrl',
+          'instagramUrl',
+          'facebookUrl',
+          'linkedinUrl',
+          'heroHeadline',
+          'heroSubtitle',
+          'aboutIntro',
+          'complianceBannerNote',
+          'privacyPolicyCustomNote',
+          'termsCustomNote',
+          'disclaimerCustomNote',
+          'loanTermsCustomNote',
+          'googleAnalyticsId',
+          'googleSiteVerification',
+          'updatedAt'
+        ]);
+      allow delete: if false;
+    }
+
+    // --- Collection: Authorized Staff Admins ---
+    match /admins/{uid} {
+      allow get: if isVerifiedUser() && isValidId(uid) && (isBootstrapAdmin() || request.auth.uid == uid);
+      allow list: if isBootstrapAdmin();
+      allow create: if isVerifiedUser()
+        && isValidId(uid)
+        && isValidAdminProfile(incoming())
+        && isBootstrapAdmin()
+        && incoming().createdAt == request.time;
+      allow update: if isVerifiedUser()
+        && isValidId(uid)
+        && isValidAdminProfile(incoming())
+        && isBootstrapAdmin()
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['email', 'displayName', 'role']);
+      allow delete: if isVerifiedUser() && isValidId(uid) && isBootstrapAdmin();
+    }
+  }
+}

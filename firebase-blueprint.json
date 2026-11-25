@@ -1,0 +1,326 @@
+{
+  "entities": {
+    "Enquiry": {
+      "title": "Customer Loan Enquiry",
+      "description": "A confidential financial services enquiry submitted by a prospective customer on the SG FINANCE public website.",
+      "type": "object",
+      "properties": {
+        "referenceCode": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 32,
+          "pattern": "^SGF-[A-Z0-9\\-]+$",
+          "description": "Unique reference code displayed to the customer upon submission."
+        },
+        "fullName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Full name of the enquirer."
+        },
+        "mobileNumber": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[6-9][0-9]{9}$",
+          "description": "Validated 10-digit Indian mobile number."
+        },
+        "email": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 120,
+          "description": "Optional customer email address."
+        },
+        "city": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "description": "City of residence or business."
+        },
+        "requiredAmount": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "description": "Indicative loan amount range or value requested."
+        },
+        "requirementType": {
+          "type": "string",
+          "enum": [
+            "Secured Lending Solutions",
+            "Loan Against Eligible Pledged Assets",
+            "Short-Term Financial Assistance",
+            "Customer Consultation and Assistance"
+          ],
+          "description": "Category of financial service requested."
+        },
+        "preferredContact": {
+          "type": "string",
+          "enum": [
+            "Phone Call",
+            "WhatsApp",
+            "Either"
+          ],
+          "description": "Preferred communication channel for follow-up."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000,
+          "description": "Optional additional details provided by the customer."
+        },
+        "consentAccepted": {
+          "type": "boolean",
+          "description": "Mandatory customer consent to be contacted and have the enquiry processed per the Privacy Policy."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "new",
+            "contacted",
+            "in_review",
+            "follow_up",
+            "closed"
+          ],
+          "description": "Internal staff follow-up status."
+        },
+        "remarks": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 2000,
+          "description": "Internal follow-up remarks added by authorized staff."
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "Page or campaign source where the enquiry originated."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of enquiry submission."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last status or remarks update."
+        }
+      },
+      "required": [
+        "referenceCode",
+        "fullName",
+        "mobileNumber",
+        "city",
+        "requiredAmount",
+        "requirementType",
+        "preferredContact",
+        "message",
+        "consentAccepted",
+        "status",
+        "remarks",
+        "source",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SiteSettings": {
+      "title": "Public Website Settings",
+      "description": "Centralized editable configuration for SG FINANCE contact details, social links, homepage copy, and legal/compliance notices.",
+      "type": "object",
+      "properties": {
+        "phoneDisplay": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "phoneHref": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 30
+        },
+        "whatsappNumber": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 20
+        },
+        "whatsappPrefillMessage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "email": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "addressLine": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "cityRegion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "workingHours": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "mapsEmbedUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        "instagramUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "facebookUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "linkedinUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "heroHeadline": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180
+        },
+        "heroSubtitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "aboutIntro": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1200
+        },
+        "complianceBannerNote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600
+        },
+        "privacyPolicyCustomNote": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 3000
+        },
+        "termsCustomNote": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 3000
+        },
+        "disclaimerCustomNote": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 3000
+        },
+        "loanTermsCustomNote": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 3000
+        },
+        "googleAnalyticsId": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 60
+        },
+        "googleSiteVerification": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "phoneDisplay",
+        "phoneHref",
+        "whatsappNumber",
+        "whatsappPrefillMessage",
+        "email",
+        "addressLine",
+        "cityRegion",
+        "workingHours",
+        "mapsEmbedUrl",
+        "instagramUrl",
+        "facebookUrl",
+        "linkedinUrl",
+        "heroHeadline",
+        "heroSubtitle",
+        "aboutIntro",
+        "complianceBannerNote",
+        "privacyPolicyCustomNote",
+        "termsCustomNote",
+        "disclaimerCustomNote",
+        "loanTermsCustomNote",
+        "googleAnalyticsId",
+        "googleSiteVerification",
+        "updatedAt"
+      ]
+    },
+    "AdminProfile": {
+      "title": "Authorized Admin Staff Profile",
+      "description": "Authorized SG FINANCE staff record managed by the primary administrator.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "admin"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "email",
+        "displayName",
+        "role",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/enquiries/{enquiryId}": {
+      "schema": {
+        "$ref": "#/entities/Enquiry"
+      },
+      "description": "Confidential customer loan enquiries. Public create-only with strict validation; read/list/update/delete restricted strictly to verified SG FINANCE admins."
+    },
+    "/site_settings/{settingId}": {
+      "schema": {
+        "$ref": "#/entities/SiteSettings"
+      },
+      "description": "Centralized public website configuration document at /site_settings/public. Public read; admin-only write."
+    },
+    "/admins/{uid}": {
+      "schema": {
+        "$ref": "#/entities/AdminProfile"
+      },
+      "description": "Authorized staff directory controlled by the primary administrator."
+    }
+  }
+}
