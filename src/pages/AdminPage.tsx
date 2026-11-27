@@ -418,7 +418,7 @@ export function AdminPage() {
       <div className="min-h-screen bg-[#0B1628] text-white flex flex-col items-center justify-center p-6">
         <SeoHead title="Staff Sign In | SG FINANCE Admin" description="Authorized staff login for SG FINANCE." noIndex />
         <div className="max-w-md w-full bg-[#101F35] border border-[#B99752]/30 p-8 sm:p-10 space-y-6">
-          <BrandMark tone="light" />
+          <BrandMark tone="light" size="lg" />
           <div className="space-y-2.5">
             <p className="text-xs font-semibold tracking-[0.12em] text-[#D4BC85]">
               AUTHORIZED STAFF ACCESS
@@ -539,7 +539,7 @@ export function AdminPage() {
       <aside className="w-full lg:w-64 bg-[#0B1628] text-white border-b lg:border-b-0 lg:border-r border-[#B99752]/20 shrink-0 flex flex-col">
         <div className="h-16 px-6 flex items-center justify-between border-b border-white/10">
           <Link to="/" aria-label="SG FINANCE Public Site">
-            <BrandMark tone="light" />
+            <BrandMark tone="light" size="sm" />
           </Link>
         </div>
 

@@ -24,7 +24,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-4 space-y-5">
             <Link to="/" aria-label="SG FINANCE Home" className="inline-block">
-              <BrandMark tone="light" />
+              <BrandMark tone="light" size="lg" />
             </Link>
             <p className="text-sm text-slate-300/90 leading-relaxed max-w-sm">
               Thoughtful secured financial services and lending against eligible pledged movable assets in Pune, Maharashtra — guided by transparency, discretion, and responsible practices.

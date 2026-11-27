@@ -1,64 +1,51 @@
+export const SG_FINANCE_LOGO_SRC = '/assets/aistudio/SG_FINANCE_LOGO_53d9e8c1.png';
+
 interface BrandMarkProps {
   tone?: 'light' | 'dark';
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 /**
- * Bespoke SG FINANCE financial crest & wordmark.
- * Precision architectural double-frame emblem with refined serif SG monogram.
+ * Official SG FINANCE brand logo & wordmark.
+ * Displays the official logo asset with balanced framing on both light and deep-navy surfaces.
  */
 export function BrandMark({ tone = 'dark', size = 'md' }: BrandMarkProps) {
   const wordmarkColor = tone === 'light' ? 'text-white' : 'text-[#0B1628]';
-  const accentColor = tone === 'light' ? '#D4BC85' : '#B99752';
-  const innerStroke = tone === 'light' ? 'rgba(212, 188, 133, 0.42)' : 'rgba(11, 22, 40, 0.22)';
-  const monogramFill = tone === 'light' ? '#FFFFFF' : '#0B1628';
-  const dim = size === 'sm' ? 30 : 34;
+  const frameClass =
+    tone === 'light'
+      ? 'bg-white border border-[#D4BC85]/45 shadow-xs'
+      : 'bg-white border border-[#E5DFD3]';
+
+  const boxSizeClass =
+    size === 'sm'
+      ? 'w-10 h-10'
+      : size === 'lg'
+        ? 'w-14 h-14 sm:w-16 sm:h-16'
+        : 'w-11 h-11 sm:w-[52px] sm:h-[52px]';
+
+  const textSizeClass =
+    size === 'sm'
+      ? 'text-[1.0625rem]'
+      : size === 'lg'
+        ? 'text-[1.25rem] sm:text-[1.375rem]'
+        : 'text-[1.125rem] sm:text-[1.2rem]';
 
   return (
     <span className="inline-flex items-center gap-3 whitespace-nowrap shrink-0 group">
-      <svg
-        width={dim}
-        height={dim}
-        viewBox="0 0 36 36"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-        className="shrink-0"
-      >
-        <rect
-          x="1"
-          y="1"
-          width="34"
-          height="34"
-          stroke={accentColor}
-          strokeWidth="1.2"
-        />
-        <rect
-          x="4"
-          y="4"
-          width="28"
-          height="28"
-          stroke={innerStroke}
-          strokeWidth="0.75"
-        />
-        <path d="M1 1H6M30 1H35M1 35H6M30 35H35" stroke={accentColor} strokeWidth="1.6" />
-        <text
-          x="18"
-          y="23.2"
-          textAnchor="middle"
-          fill={monogramFill}
-          fontFamily="'DM Serif Display', Georgia, serif"
-          fontSize="15"
-          letterSpacing="0.6"
-        >
-          SG
-        </text>
-        <line x1="12" y1="27.2" x2="24" y2="27.2" stroke={accentColor} strokeWidth="1" />
-      </svg>
       <span
-        className={`font-display ${
-          size === 'sm' ? 'text-[1.0625rem]' : 'text-[1.1875rem]'
-        } tracking-[0.09em] ${wordmarkColor} whitespace-nowrap`}
+        className={`relative inline-flex items-center justify-center overflow-hidden rounded-xs shrink-0 ${boxSizeClass} ${frameClass}`}
+      >
+        <img
+          src={SG_FINANCE_LOGO_SRC}
+          alt="SG FINANCE official logo"
+          width={64}
+          height={64}
+          decoding="async"
+          className="w-full h-full object-contain scale-[1.82] translate-y-[2%] select-none pointer-events-none"
+        />
+      </span>
+      <span
+        className={`font-display ${textSizeClass} tracking-[0.09em] ${wordmarkColor} whitespace-nowrap`}
       >
         SG FINANCE
       </span>
