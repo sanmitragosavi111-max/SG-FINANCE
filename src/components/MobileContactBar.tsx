@@ -14,14 +14,14 @@ export function MobileContactBar() {
 
   return (
     <nav
-      aria-label="Quick Mobile Contact Bar"
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 h-14 bg-[#070E1A]/98 backdrop-blur-md border-t border-white/15 grid grid-cols-3 divide-x divide-white/10"
+      aria-label="Mobile quick contact"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 h-[52px] bg-[#0B1628]/98 backdrop-blur-md border-t border-[#B99752]/35 grid grid-cols-3 divide-x divide-white/10"
     >
       <a
         href={telHref}
         className="flex items-center justify-center gap-1.5 text-xs font-semibold tracking-wider text-white hover:bg-white/5 transition-colors whitespace-nowrap"
       >
-        <Phone className="w-4 h-4 text-[#D4AF5A] shrink-0" aria-hidden="true" />
+        <Phone className="w-4 h-4 text-[#D4BC85] shrink-0" aria-hidden="true" />
         CALL
       </a>
       <a
@@ -30,12 +30,12 @@ export function MobileContactBar() {
         rel="noopener noreferrer"
         className="flex items-center justify-center gap-1.5 text-xs font-semibold tracking-wider text-white hover:bg-white/5 transition-colors whitespace-nowrap"
       >
-        <MessageCircle className="w-4 h-4 text-[#D4AF5A] shrink-0" aria-hidden="true" />
+        <MessageCircle className="w-4 h-4 text-[#D4BC85] shrink-0" aria-hidden="true" />
         WHATSAPP
       </a>
       <Link
         to="/enquire"
-        className="flex items-center justify-center gap-1.5 text-xs font-semibold tracking-wider bg-[#B89347] text-[#070E1A] hover:bg-[#D4AF5A] transition-colors whitespace-nowrap"
+        className="flex items-center justify-center gap-1.5 text-xs font-semibold tracking-wider bg-[#B99752] text-[#0B1628] hover:bg-[#D4BC85] transition-colors whitespace-nowrap"
       >
         <FileText className="w-4 h-4 shrink-0" aria-hidden="true" />
         ENQUIRE

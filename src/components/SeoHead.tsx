@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { ASSETS } from '../config/defaults';
 
 interface SeoHeadProps {
   title: string;
@@ -32,6 +33,7 @@ export function SeoHead({
 
     const canonicalUrl =
       window.location.origin + (path ? (path.startsWith('/') ? path : `/${path}`) : window.location.pathname);
+    const absoluteOgImage = `${window.location.origin}${ASSETS.ogShareCard}`;
 
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
@@ -44,8 +46,10 @@ export function SeoHead({
     upsertMeta('property', 'og:title', title);
     upsertMeta('property', 'og:description', description);
     upsertMeta('property', 'og:url', canonicalUrl);
+    upsertMeta('property', 'og:image', absoluteOgImage);
     upsertMeta('name', 'twitter:title', title);
     upsertMeta('name', 'twitter:description', description);
+    upsertMeta('name', 'twitter:image', absoluteOgImage);
 
     const scriptId = 'sgf-route-jsonld';
     const existingScript = document.getElementById(scriptId);

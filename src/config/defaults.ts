@@ -1,10 +1,11 @@
 import type { SiteSettings } from '../types/site.ts';
-import { OFFICIAL_CONTACT } from './contact.ts';
+import { formatIndianPhoneDisplay, OFFICIAL_CONTACT } from './contact.ts';
 
 export const ASSETS = {
-  heroOffice: '/src/assets/images/hero_sg_finance_1795591708067.jpg',
-  servicesDesk: '/src/assets/images/services_secured_lending_1795591709160.jpg',
-  aboutLounge: '/src/assets/images/about_pune_architecture_1795591711244.jpg',
+  heroEditorial: '/src/assets/images/hero_editorial_consultation_1795699112721.jpg',
+  servicesEvaluation: '/src/assets/images/editorial_asset_evaluation_1795699115034.jpg',
+  aboutSanctuary: '/src/assets/images/editorial_pune_sanctuary_1795699119127.jpg',
+  processConsultation: '/src/assets/images/editorial_consultation_meeting_1795699116800.jpg',
   ogShareCard: '/src/assets/images/og_sg_finance_share_1795591709430.jpg',
 } as const;
 
@@ -13,21 +14,21 @@ const env = (import.meta as unknown as { env?: Record<string, string | undefined
 export const DEFAULT_WHATSAPP_MESSAGE = OFFICIAL_CONTACT.whatsappPrefillMessage;
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
-  phoneDisplay: env.VITE_CONTACT_PHONE?.trim() || OFFICIAL_CONTACT.phoneDisplay,
+  phoneDisplay: formatIndianPhoneDisplay(env.VITE_CONTACT_PHONE?.trim() || OFFICIAL_CONTACT.phoneDisplay),
   phoneHref: env.VITE_CONTACT_PHONE?.replace(/[^\d+]/g, '') || OFFICIAL_CONTACT.phoneHref,
   whatsappNumber: env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || OFFICIAL_CONTACT.whatsappNumber,
   whatsappPrefillMessage: OFFICIAL_CONTACT.whatsappPrefillMessage,
   email: env.VITE_CONTACT_EMAIL?.trim() || OFFICIAL_CONTACT.email,
-  addressLine: '[Office Suite & Street Address — Update in Admin]',
+  addressLine: 'Office Visit by Appointment',
   cityRegion: OFFICIAL_CONTACT.cityRegion,
-  workingHours: 'Monday to Saturday · [Update Working Hours in Admin]',
+  workingHours: 'Monday to Saturday · By Appointment',
   mapsEmbedUrl: '',
   instagramUrl: '',
   facebookUrl: '',
   linkedinUrl: '',
-  heroHeadline: 'Financial Solutions Built Around Trust and Security.',
+  heroHeadline: 'Financial Clarity. Built on Trust.',
   heroSubtitle:
-    'Explore secured financial solutions with a transparent process, professional assistance and customer-focused service.',
+    'Thoughtful secured financial solutions, guided by transparency, confidentiality and a professional approach.',
   aboutIntro:
     'SG FINANCE is a Pune-based financial services firm focused on secured lending and loans against eligible pledged movable assets. Every enquiry is handled with clear communication, confidentiality, and responsible financial practices.',
   complianceBannerNote:
@@ -123,28 +124,32 @@ export const PROCESS_STEPS: ProcessStep[] = [
   {
     number: '01',
     title: 'Submit Your Enquiry',
-    summary: 'Share your basic contact details and financial requirement through our secure online enquiry form or via WhatsApp.',
+    summary:
+      'Share your basic contact details and financial requirement through our secure online enquiry form or via WhatsApp.',
     detail:
       'Provide your name, Indian mobile number, city, indicative requirement, and preferred method of contact. You will receive an immediate enquiry reference number.',
   },
   {
     number: '02',
     title: 'Discuss Your Financial Requirements',
-    summary: 'An authorized SG FINANCE representative contacts you via your preferred channel to understand your needs.',
+    summary:
+      'An authorized SG FINANCE representative contacts you via your preferred channel to understand your needs.',
     detail:
       'We clarify your requirement, explain our general secured lending procedure, and outline any documentation that may be requested for further evaluation.',
   },
   {
     number: '03',
     title: 'Asset Evaluation and Documentation, Where Applicable',
-    summary: 'Eligible movable assets and supporting KYC documents are reviewed transparently in accordance with business procedures.',
+    summary:
+      'Eligible movable assets and supporting KYC documents are reviewed transparently in accordance with business procedures.',
     detail:
       'Where a secured facility involves pledged movable assets, evaluation and verification are carried out systematically with clear communication at every stage.',
   },
   {
     number: '04',
     title: 'Application Review and Decision',
-    summary: 'Your formal request undergoes internal review, and the outcome along with applicable terms is communicated clearly.',
+    summary:
+      'Your formal request undergoes internal review, and the outcome along with applicable terms is communicated clearly.',
     detail:
       'Submitting an enquiry or completing an evaluation does not guarantee loan approval. All decisions remain subject to internal credit/business approval and applicable laws.',
   },
@@ -161,25 +166,25 @@ export const WHY_CHOOSE_PILLARS: PhilosophyPillar[] = [
     index: '01',
     title: 'Transparent Process',
     description:
-      'Every step from initial enquiry to documentation review is explained in plain language without vague promises or unclear terms.',
+      'Every stage from initial enquiry to documentation review is explained in plain, straightforward language without ambiguity or unstated conditions.',
   },
   {
     index: '02',
-    title: 'Customer-First Assistance',
+    title: 'Personalised Assistance',
     description:
-      'Direct access to our Pune-based team via phone, WhatsApp, or appointment so your questions are addressed promptly and respectfully.',
+      'Direct one-to-one support from our Pune team by telephone, WhatsApp, or scheduled appointment so every question is addressed thoughtfully.',
   },
   {
     index: '03',
-    title: 'Security and Confidentiality',
+    title: 'Confidential Consultation',
     description:
-      'Customer enquiry records and discussions are treated as strictly confidential and accessible only to authorized SG FINANCE personnel.',
+      'Customer enquiry records, financial discussions, and asset evaluations are handled privately with restricted, authorized staff access.',
   },
   {
     index: '04',
     title: 'Responsible Financial Practices',
     description:
-      'We encourage informed borrowing grounded in clear documentation, formal review, and adherence to applicable regulatory requirements.',
+      'We encourage informed financial decisions grounded in clear written documentation, formal review, and adherence to applicable laws in Maharashtra.',
   },
 ];
 
@@ -230,6 +235,6 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: 'how-to-contact',
     question: 'How can I contact SG FINANCE?',
     answer:
-      'You can reach SG FINANCE by submitting the online Enquire Now form, messaging us via the WhatsApp button available on every page, calling our office number listed on the Contact Us page, or sending an email to our enquiries desk in Pune, Maharashtra.',
+      'You can reach SG FINANCE by submitting the online Enquire Now form, messaging us via the WhatsApp button available on every page, calling our office number (+91 7038391002), or writing to in.sg.infra@gmail.com.',
   },
 ];

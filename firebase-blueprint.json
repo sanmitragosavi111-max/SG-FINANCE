@@ -104,6 +104,43 @@
           "type": "string",
           "format": "date-time",
           "description": "Server timestamp of last status or remarks update."
+        },
+        "emailNotificationStatus": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "sent",
+            "failed"
+          ],
+          "description": "Delivery status of the automated internal notification email."
+        },
+        "emailNotificationError": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300,
+          "description": "Sanitized failure reason if email notification delivery failed."
+        },
+        "emailNotificationAttempts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 50,
+          "description": "Number of email notification delivery attempts made."
+        },
+        "emailNotificationRetryStatus": {
+          "type": "string",
+          "enum": [
+            "none",
+            "retrying",
+            "retried_sent",
+            "retried_failed"
+          ],
+          "description": "Retry state for internal email notifications managed by authorized admins."
+        },
+        "emailNotifiedAt": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 40,
+          "description": "ISO-8601 timestamp when the internal email notification was last successfully sent."
         }
       },
       "required": [

@@ -13,6 +13,7 @@ import {
 import { enquiriesToCsv } from './csv';
 import {
   OFFICIAL_CONTACT,
+  formatIndianPhoneDisplay,
   getTelHref,
   getMailtoHref,
 } from '../config/contact';
@@ -20,7 +21,10 @@ import type { EnquiryRecord } from '../types/site';
 
 test('official central contact config generates exact tel, WhatsApp, and mailto URLs', () => {
   assert.equal(OFFICIAL_CONTACT.phoneDisplay, '+91 7038391002');
+  assert.equal(formatIndianPhoneDisplay('7038391002'), '+91 7038391002');
+  assert.equal(formatIndianPhoneDisplay('917038391002'), '+91 7038391002');
   assert.equal(getTelHref(OFFICIAL_CONTACT.phoneHref), 'tel:+917038391002');
+  assert.equal(getTelHref('7038391002'), 'tel:+917038391002');
   assert.equal(
     buildWhatsAppUrl(OFFICIAL_CONTACT.whatsappNumber, OFFICIAL_CONTACT.whatsappPrefillMessage),
     'https://wa.me/917038391002?text=Hello%20SG%20FINANCE%2C%20I%20would%20like%20to%20enquire%20about%20your%20financial%20services.%20Please%20contact%20me.'

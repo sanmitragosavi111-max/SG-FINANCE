@@ -62,6 +62,37 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
     meta.content = token;
   }, [settings.googleSiteVerification]);
 
+  // Activate Google Analytics 4 (gtag.js) when a valid Measurement ID (G-XXXXXXXXXX) is configured
+  useEffect(() => {
+    const measurementId = settings.googleAnalyticsId.trim();
+    if (!/^G-[A-Z0-9]{6,20}$/i.test(measurementId)) return;
+
+    const scriptId = 'sgf-ga4-script';
+    const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!existing || existing.dataset.measurementId !== measurementId) {
+      existing?.remove();
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.async = true;
+      script.dataset.measurementId = measurementId;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+      document.head.appendChild(script);
+    }
+
+    const win = window as unknown as {
+      dataLayer?: unknown[];
+      gtag?: (...args: unknown[]) => void;
+    };
+    win.dataLayer = win.dataLayer || [];
+    if (!win.gtag) {
+      win.gtag = (...args: unknown[]) => {
+        win.dataLayer?.push(args);
+      };
+    }
+    win.gtag('js', new Date());
+    win.gtag('config', measurementId, { anonymize_ip: true });
+  }, [settings.googleAnalyticsId]);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);

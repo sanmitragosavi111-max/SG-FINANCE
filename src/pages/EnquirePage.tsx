@@ -34,25 +34,29 @@ export function EnquirePage() {
         path="/enquire"
       />
 
-      <section className="bg-[#0A1628] text-white py-14 sm:py-16 border-b border-white/10">
+      {/* Focused Warm Ivory Header */}
+      <section className="bg-[#F7F5F0] border-b border-[#E5DFD3] py-14 sm:py-18">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="max-w-3xl space-y-3">
-            <p className="text-xs font-semibold tracking-[0.14em] text-[#D4AF5A]">
-              Confidential Enquiry Form · Pune, Maharashtra
-            </p>
-            <h1 className="font-display text-3xl sm:text-5xl font-semibold leading-tight">
-              Submit your financial enquiry.
+          <div className="max-w-3xl space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-px bg-[#B99752]" aria-hidden="true" />
+              <p className="text-xs font-semibold tracking-[0.08em] text-[#B99752]">
+                Confidential Enquiry · Pune, Maharashtra
+              </p>
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-[#0B1628] leading-[1.1]">
+              Let&apos;s understand your financial requirement.
             </h1>
-            <p className="text-base text-slate-300 leading-relaxed">
-              Share your requirement below. Our authorized team will reach out via your preferred channel to explain the next steps clearly.
+            <p className="text-base text-[#4B5563] leading-[1.75]">
+              Share your basic details below. An authorized SG FINANCE representative will contact you via your preferred channel during business working hours to explain the next steps clearly.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-14 pb-24 sm:py-20 sm:pb-24 bg-[#F7F8FA]">
+      <section className="py-14 pb-24 sm:py-20 sm:pb-28 bg-white">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             <div className="lg:col-span-8">
               <EnquiryForm
                 source={sourceLabel}
@@ -61,52 +65,78 @@ export function EnquirePage() {
             </div>
 
             <aside className="lg:col-span-4 space-y-6">
-              <div className="bg-white border border-slate-200 p-6 space-y-4">
-                <div className="flex items-center gap-2.5 text-[#0A1628]">
-                  <ShieldCheck className="w-5 h-5 text-[#8C6A24]" aria-hidden="true" />
-                  <h2 className="font-display text-lg font-semibold">
+              <div className="bg-[#F7F5F0] border border-[#E5DFD3] p-7 space-y-5">
+                <div className="flex items-center gap-2.5 text-[#0B1628]">
+                  <ShieldCheck className="w-5 h-5 text-[#B99752]" aria-hidden="true" />
+                  <h2 className="font-display text-xl text-[#0B1628]">
                     What Happens Next
                   </h2>
                 </div>
-                <ol className="space-y-3 text-sm text-slate-600 list-decimal pl-4">
-                  <li>Your enquiry is logged securely with a unique reference code.</li>
-                  <li>An authorized SG FINANCE team member contacts you during working hours.</li>
-                  <li>We outline applicable documentation and asset evaluation steps clearly.</li>
+                <ol className="space-y-4 text-sm text-[#4B5563]">
+                  <li className="flex items-start gap-3">
+                    <span className="font-mono text-xs text-[#B99752] tabular-nums pt-0.5 shrink-0">
+                      01
+                    </span>
+                    <span className="leading-relaxed">
+                      Your enquiry is recorded securely and assigned a unique reference number.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="font-mono text-xs text-[#B99752] tabular-nums pt-0.5 shrink-0">
+                      02
+                    </span>
+                    <span className="leading-relaxed">
+                      An authorized SG FINANCE team member contacts you during working hours.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="font-mono text-xs text-[#B99752] tabular-nums pt-0.5 shrink-0">
+                      03
+                    </span>
+                    <span className="leading-relaxed">
+                      We outline applicable documentation and asset evaluation procedures clearly.
+                    </span>
+                  </li>
                 </ol>
-                <p className="text-xs text-slate-500 pt-2 border-t border-slate-100 leading-relaxed">
-                  Submitting this enquiry does not obligate you to borrow and does not guarantee loan approval.
+                <p className="text-xs text-[#747C86] pt-4 border-t border-[#E5DFD3] leading-relaxed">
+                  Submitting this enquiry carries zero obligation to borrow and does not guarantee loan approval.
                 </p>
               </div>
 
-              <div className="bg-[#0A1628] text-white p-6 space-y-4">
-                <h2 className="font-display text-lg font-semibold">
-                  Need Immediate Assistance?
-                </h2>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Connect directly with our Pune consultation desk by phone, WhatsApp, or email.
-                </p>
+              <div className="bg-[#0B1628] text-white p-7 space-y-5">
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold tracking-[0.08em] text-[#D4BC85]">
+                    Direct Desk
+                  </p>
+                  <h2 className="font-display text-2xl text-white">
+                    Prefer to speak directly?
+                  </h2>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Connect with our Pune consultation desk by telephone, WhatsApp, or email.
+                  </p>
+                </div>
                 <div className="flex flex-col gap-2.5">
+                  <a
+                    href={telHref}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold bg-[#B99752] text-[#0B1628] hover:bg-[#D4BC85] transition-colors tabular-nums"
+                  >
+                    <Phone className="w-4 h-4" aria-hidden="true" />
+                    Call {settings.phoneDisplay}
+                  </a>
                   <a
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold bg-[#B89347] text-[#070E1A] hover:bg-[#D4AF5A] transition-colors"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white border border-white/25 hover:border-[#D4BC85] hover:text-[#D4BC85] transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4" aria-hidden="true" />
+                    <MessageCircle className="w-4 h-4 text-[#D4BC85]" aria-hidden="true" />
                     Chat on WhatsApp
                   </a>
                   <a
-                    href={telHref}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white border border-white/25 hover:border-white/60 transition-colors tabular-nums"
-                  >
-                    <Phone className="w-4 h-4 text-[#D4AF5A]" aria-hidden="true" />
-                    Call {settings.phoneDisplay}
-                  </a>
-                  <a
                     href={mailtoHref}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white border border-white/25 hover:border-white/60 transition-colors"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white border border-white/25 hover:border-[#D4BC85] hover:text-[#D4BC85] transition-colors"
                   >
-                    <Mail className="w-4 h-4 text-[#D4AF5A]" aria-hidden="true" />
+                    <Mail className="w-4 h-4 text-[#D4BC85]" aria-hidden="true" />
                     Email Us
                   </a>
                 </div>

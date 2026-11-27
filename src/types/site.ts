@@ -37,6 +37,23 @@ export interface EnquiryFormInput {
   consentAccepted: boolean;
 }
 
+export const EMAIL_NOTIFICATION_STATUSES = [
+  'pending',
+  'sent',
+  'failed',
+] as const;
+
+export type EmailNotificationStatus = (typeof EMAIL_NOTIFICATION_STATUSES)[number];
+
+export const NOTIFICATION_RETRY_STATUSES = [
+  'none',
+  'retrying',
+  'retried_sent',
+  'retried_failed',
+] as const;
+
+export type NotificationRetryStatus = (typeof NOTIFICATION_RETRY_STATUSES)[number];
+
 export interface EnquiryRecord {
   id: string;
   referenceCode: string;
@@ -54,6 +71,11 @@ export interface EnquiryRecord {
   source: string;
   createdAt: Date | null;
   updatedAt: Date | null;
+  emailNotificationStatus?: EmailNotificationStatus;
+  emailNotificationError?: string;
+  emailNotificationAttempts?: number;
+  emailNotificationRetryStatus?: NotificationRetryStatus;
+  emailNotifiedAt?: string;
 }
 
 export interface SiteSettings {

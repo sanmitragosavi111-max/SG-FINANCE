@@ -8,6 +8,13 @@ interface LegalPageProps {
   type: LegalDocType;
 }
 
+const LEGAL_NAV: { type: LegalDocType; label: string; to: string }[] = [
+  { type: 'privacy', label: 'Privacy Policy', to: '/privacy-policy' },
+  { type: 'terms', label: 'Terms and Conditions', to: '/terms-and-conditions' },
+  { type: 'disclaimer', label: 'Disclaimer', to: '/disclaimer' },
+  { type: 'loan-terms', label: 'Loan Terms and Conditions', to: '/loan-terms' },
+];
+
 const LEGAL_META: Record<
   LegalDocType,
   {
@@ -29,7 +36,7 @@ const LEGAL_META: Record<
     sections: [
       {
         title: '1. Information Collected',
-        body: 'When you submit an enquiry through this website, we collect only the details you voluntarily provide: your full name, Indian mobile number, city, indicative loan requirement, preferred communication channel, optional message, and your explicit consent timestamp.',
+        body: 'When you submit an enquiry through this website, we collect only the details you voluntarily provide: your full name, Indian mobile number, optional email address, city, indicative loan requirement, preferred communication channel, optional message, and your explicit consent timestamp.',
       },
       {
         title: '2. Purpose of Collection',
@@ -146,67 +153,89 @@ export function LegalPage({ type }: LegalPageProps) {
         path={docMeta.path}
       />
 
-      <section className="bg-[#0A1628] text-white py-14 sm:py-18 border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-5 sm:px-8 space-y-3">
-          <p className="text-xs font-semibold tracking-[0.14em] text-[#D4AF5A]">
-            Legal &amp; Compliance · SG FINANCE
-          </p>
-          <h1 className="font-display text-3xl sm:text-5xl font-semibold">
-            {docMeta.heading}
-          </h1>
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            {docMeta.subtitle}
-          </p>
+      {/* Archival Warm Ivory Header */}
+      <section className="bg-[#F7F5F0] border-b border-[#E5DFD3] py-14 sm:py-18">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8">
+          <div className="max-w-3xl space-y-3.5">
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-px bg-[#B99752]" aria-hidden="true" />
+              <p className="text-xs font-semibold tracking-[0.08em] text-[#B99752]">
+                Legal &amp; Governance · SG FINANCE
+              </p>
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-[#0B1628] leading-[1.1]">
+              {docMeta.heading}
+            </h1>
+            <p className="text-base text-[#4B5563] leading-[1.75]">
+              {docMeta.subtitle}
+            </p>
+          </div>
         </div>
       </section>
 
+      {/* Archival Document Layout */}
       <section className="py-14 sm:py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-5 sm:px-8 space-y-10">
-          {customNote.trim() && (
-            <div className="bg-[#F7F8FA] border border-slate-200 p-6 space-y-2">
-              <p className="text-xs font-semibold tracking-[0.12em] text-[#8C6A24]">
-                Compliance &amp; Legal Review Note (Editable in Admin Dashboard)
+        <div className="max-w-7xl mx-auto px-5 sm:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            {/* Left Document Index */}
+            <aside className="lg:col-span-3 lg:sticky lg:top-28 space-y-5">
+              <p className="text-xs font-semibold tracking-[0.08em] text-[#747C86]">
+                Governance Documents
               </p>
-              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
-                {customNote}
-              </p>
-            </div>
-          )}
-
-          <div className="space-y-8">
-            {docMeta.sections.map((section) => (
-              <div key={section.title} className="space-y-2.5 border-b border-slate-200 pb-7">
-                <h2 className="font-display text-xl sm:text-2xl font-semibold text-[#0A1628]">
-                  {section.title}
-                </h2>
-                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                  {section.body}
-                </p>
+              <nav aria-label="Legal Documents" className="flex flex-col border-t border-[#E5DFD3]">
+                {LEGAL_NAV.map((item) => {
+                  const active = item.type === type;
+                  return (
+                    <Link
+                      key={item.type}
+                      to={item.to}
+                      className={`py-3.5 text-sm border-b border-[#E5DFD3] transition-colors ${
+                        active
+                          ? 'font-semibold text-[#0B1628] underline underline-offset-4 decoration-[#B99752]'
+                          : 'text-[#747C86] hover:text-[#0B1628]'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+              <div className="pt-2">
+                <Link
+                  to="/contact"
+                  className="text-sm font-semibold text-[#0B1628] hover:text-[#B99752] transition-colors"
+                >
+                  Contact SG FINANCE Desk →
+                </Link>
               </div>
-            ))}
-          </div>
+            </aside>
 
-          <div className="pt-2 flex flex-wrap items-center justify-between gap-4 text-sm">
-            <div className="flex flex-wrap gap-4 text-slate-600">
-              <Link to="/privacy-policy" className="hover:text-[#0A1628] underline underline-offset-2">
-                Privacy Policy
-              </Link>
-              <Link to="/terms-and-conditions" className="hover:text-[#0A1628] underline underline-offset-2">
-                Terms &amp; Conditions
-              </Link>
-              <Link to="/disclaimer" className="hover:text-[#0A1628] underline underline-offset-2">
-                Disclaimer
-              </Link>
-              <Link to="/loan-terms" className="hover:text-[#0A1628] underline underline-offset-2">
-                Loan Terms
-              </Link>
-            </div>
-            <Link
-              to="/contact"
-              className="font-semibold text-[#0A1628] hover:text-[#8C6A24] transition-colors"
-            >
-              Contact SG FINANCE
-            </Link>
+            {/* Right Document Prose (Optimal 65–72ch Reading Measure) */}
+            <article className="lg:col-span-9 max-w-[68ch] space-y-10">
+              {customNote.trim() && (
+                <div className="bg-[#F7F5F0] border border-[#E5DFD3] p-6 sm:p-7 space-y-2">
+                  <p className="text-xs font-semibold tracking-[0.06em] text-[#B99752]">
+                    Compliance &amp; Legal Review Note (Editable in Admin Dashboard)
+                  </p>
+                  <p className="text-sm text-[#202A36] leading-[1.75] whitespace-pre-line">
+                    {customNote}
+                  </p>
+                </div>
+              )}
+
+              <div className="divide-y divide-[#E5DFD3] border-t border-b border-[#E5DFD3]">
+                {docMeta.sections.map((section) => (
+                  <div key={section.title} className="py-8 space-y-3">
+                    <h2 className="font-display text-2xl text-[#0B1628] leading-snug">
+                      {section.title}
+                    </h2>
+                    <p className="text-[0.9375rem] sm:text-base text-[#4B5563] leading-[1.8]">
+                      {section.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </article>
           </div>
         </div>
       </section>

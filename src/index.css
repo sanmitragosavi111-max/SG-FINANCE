@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
-  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --color-navy-950: #070e1a;
-  --color-navy-900: #0a1628;
-  --color-navy-800: #12233d;
-  --color-navy-700: #1c3354;
-  --color-gold-600: #8c6a24;
-  --color-gold-500: #b89347;
-  --color-gold-400: #d4af5a;
-  --color-gold-200: #ecd9a8;
-  --color-alabaster: #f7f8fa;
+  --color-navy-primary: #0b1628;
+  --color-navy-deep: #101f35;
+  --color-gold-accent: #b99752;
+  --color-gold-warm: #d4bc85;
+  --color-ivory: #f7f5f0;
+  --color-ivory-border: #e5dfd3;
+  --color-ink: #202a36;
+  --color-muted: #747c86;
 }
 
 @layer base {
   html {
     font-family: var(--font-sans);
     scroll-behavior: smooth;
-    color: #0f172a;
+    color: #202a36;
     background-color: #ffffff;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   h1,
@@ -31,13 +31,14 @@
   }
 
   :focus-visible {
-    outline: 2px solid #b89347;
+    outline: 2px solid #b99752;
     outline-offset: 2px;
   }
 }
 
 .font-display {
   font-family: var(--font-serif);
+  font-weight: 400;
 }
 
 .tabular-nums {

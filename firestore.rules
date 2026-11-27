@@ -78,7 +78,12 @@ service cloud.firestore {
           'remarks',
           'source',
           'createdAt',
-          'updatedAt'
+          'updatedAt',
+          'emailNotificationStatus',
+          'emailNotificationError',
+          'emailNotificationAttempts',
+          'emailNotificationRetryStatus',
+          'emailNotifiedAt'
         ])
         && data.referenceCode is string
         && data.referenceCode.size() >= 6
@@ -90,7 +95,11 @@ service cloud.firestore {
         && data.mobileNumber is string
         && data.mobileNumber.size() == 10
         && data.mobileNumber.matches('^[6-9][0-9]{9}$')
-        && (!('email' in data) || (data.email is string && data.email.size() <= 120))
+        && (!('email' in data) || (
+          data.email is string
+          && data.email.size() <= 120
+          && (data.email == '' || data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$'))
+        ))
         && data.city is string
         && data.city.size() >= 2
         && data.city.size() <= 80
@@ -118,7 +127,28 @@ service cloud.firestore {
         && data.source.size() >= 1
         && data.source.size() <= 60
         && data.createdAt is timestamp
-        && data.updatedAt is timestamp;
+        && data.updatedAt is timestamp
+        && (!('emailNotificationStatus' in data) || (
+          data.emailNotificationStatus is string
+          && data.emailNotificationStatus in ['pending', 'sent', 'failed']
+        ))
+        && (!('emailNotificationError' in data) || (
+          data.emailNotificationError is string
+          && data.emailNotificationError.size() <= 300
+        ))
+        && (!('emailNotificationAttempts' in data) || (
+          data.emailNotificationAttempts is int
+          && data.emailNotificationAttempts >= 0
+          && data.emailNotificationAttempts <= 50
+        ))
+        && (!('emailNotificationRetryStatus' in data) || (
+          data.emailNotificationRetryStatus is string
+          && data.emailNotificationRetryStatus in ['none', 'retrying', 'retried_sent', 'retried_failed']
+        ))
+        && (!('emailNotifiedAt' in data) || (
+          data.emailNotifiedAt is string
+          && data.emailNotifiedAt.size() <= 40
+        ));
     }
 
     function isValidSiteSettings(data) {
@@ -209,25 +239,39 @@ service cloud.firestore {
 
     // --- Collection: Customer Enquiries (Strict PII Isolation) ---
     match /enquiries/{enquiryId} {
-      // Strictly verified admin access for reading customer PII
+      // Strictly verified admin access (bootstrap + authorized staff) for reading customer PII
       allow get: if isVerifiedUser() && isValidId(enquiryId) && isAdmin();
-      allow list: if isBootstrapAdmin();
+      allow list: if isVerifiedUser() && isAdmin();
 
       // Public lead intake with strict schema, consent, initial state, and server timestamp validation
       allow create: if isValidId(enquiryId)
         && isValidEnquiry(incoming())
         && incoming().status == 'new'
         && incoming().remarks == ''
+        && (!('emailNotificationStatus' in incoming()) || incoming().emailNotificationStatus == 'pending')
+        && (!('emailNotificationError' in incoming()) || incoming().emailNotificationError == '')
+        && (!('emailNotificationAttempts' in incoming()) || incoming().emailNotificationAttempts == 0)
+        && (!('emailNotificationRetryStatus' in incoming()) || incoming().emailNotificationRetryStatus == 'none')
+        && (!('emailNotifiedAt' in incoming()) || incoming().emailNotifiedAt == '')
         && incoming().createdAt == request.time
         && incoming().updatedAt == request.time;
 
-      // Admin-only status & follow-up remarks updates; customer fields remain immutable
+      // Admin-only status, follow-up remarks, and notification delivery tracking updates; customer PII remains immutable
       allow update: if isVerifiedUser()
         && isValidId(enquiryId)
         && isValidEnquiry(incoming())
         && isAdmin()
         && (existing().status != 'closed' || isAdmin())
-        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'remarks', 'updatedAt'])
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'status',
+          'remarks',
+          'updatedAt',
+          'emailNotificationStatus',
+          'emailNotificationError',
+          'emailNotificationAttempts',
+          'emailNotificationRetryStatus',
+          'emailNotifiedAt'
+        ])
         && incoming().createdAt == existing().createdAt
         && incoming().referenceCode == existing().referenceCode
         && incoming().fullName == existing().fullName

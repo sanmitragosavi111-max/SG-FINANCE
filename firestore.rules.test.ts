@@ -12,17 +12,18 @@ test('firestore.rules enforces default-deny catch-all at top', () => {
   assert.match(rulesContent, /match \/\{document=\*\*\}\s*\{\s*allow read, write: if false;\s*\}/);
 });
 
-test('enquiries collection isolates PII from public reads and lists', () => {
+test('enquiries collection isolates PII from public reads and aligns list with verified admins', () => {
   assert.match(rulesContent, /match \/enquiries\/\{enquiryId\}/);
   assert.match(rulesContent, /allow get: if isVerifiedUser\(\) && isValidId\(enquiryId\) && isAdmin\(\);/);
-  assert.match(rulesContent, /allow list: if isBootstrapAdmin\(\);/);
+  assert.match(rulesContent, /allow list: if isVerifiedUser\(\) && isAdmin\(\);/);
 });
 
-test('enquiries create enforces Dirty Dozen guards (schema keys, Indian mobile regex, consent, initial status, server timestamps)', () => {
+test('enquiries create enforces Dirty Dozen guards (schema keys, Indian mobile regex, email format, consent, initial status, server timestamps)', () => {
   assert.match(rulesContent, /data\.keys\(\)\.hasAll\(/);
   assert.match(rulesContent, /data\.keys\(\)\.hasOnly\(/);
   assert.match(rulesContent, /data\.mobileNumber\.matches\('\^\[6-9\]\[0-9\]\{9\}\$'\)/);
-  assert.match(rulesContent, /!\('email' in data\) \|\| \(data\.email is string && data\.email\.size\(\) <= 120\)/);
+  assert.match(rulesContent, /data\.email\.size\(\) <= 120/);
+  assert.match(rulesContent, /data\.email == '' \|\| data\.email\.matches\(/);
   assert.match(rulesContent, /data\.consentAccepted == true/);
   assert.match(rulesContent, /incoming\(\)\.status == 'new'/);
   assert.match(rulesContent, /incoming\(\)\.remarks == ''/);
@@ -30,11 +31,11 @@ test('enquiries create enforces Dirty Dozen guards (schema keys, Indian mobile r
   assert.match(rulesContent, /incoming\(\)\.updatedAt == request\.time/);
 });
 
-test('enquiries update preserves immutable customer PII fields and allows only status, remarks, updatedAt', () => {
-  assert.match(
-    rulesContent,
-    /incoming\(\)\.diff\(existing\(\)\)\.affectedKeys\(\)\.hasOnly\(\['status', 'remarks', 'updatedAt'\]\)/
-  );
+test('enquiries update preserves immutable customer PII fields and allows only status, remarks, updatedAt, and notification tracking fields', () => {
+  assert.match(rulesContent, /'emailNotificationStatus'/);
+  assert.match(rulesContent, /'emailNotificationRetryStatus'/);
+  assert.match(rulesContent, /incoming\(\)\.emailNotificationStatus == 'pending'/);
+  assert.match(rulesContent, /incoming\(\)\.diff\(existing\(\)\)\.affectedKeys\(\)\.hasOnly\(\[\s*'status',\s*'remarks',\s*'updatedAt',\s*'emailNotificationStatus',\s*'emailNotificationError',\s*'emailNotificationAttempts',\s*'emailNotificationRetryStatus',\s*'emailNotifiedAt'\s*\]\)/);
   assert.match(rulesContent, /incoming\(\)\.mobileNumber == existing\(\)\.mobileNumber/);
   assert.match(rulesContent, /!\('email' in existing\(\)\) \|\| incoming\(\)\.email == existing\(\)\.email/);
   assert.match(rulesContent, /incoming\(\)\.createdAt == existing\(\)\.createdAt/);

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SiteProvider } from './context/SiteContext';
@@ -11,8 +12,22 @@ import { FaqPage } from './pages/FaqPage';
 import { EnquirePage } from './pages/EnquirePage';
 import { CampaignLandingPage } from './pages/CampaignLandingPage';
 import { LegalPage } from './pages/LegalPage';
-import { AdminPage } from './pages/AdminPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+
+const AdminPage = lazy(() =>
+  import('./pages/AdminPage').then((mod) => ({ default: mod.AdminPage }))
+);
+
+function AdminLoadingFallback() {
+  return (
+    <div className="min-h-screen bg-[#0B1628] text-white flex items-center justify-center px-6">
+      <div className="text-center space-y-2">
+        <p className="text-xs font-semibold tracking-[0.14em] text-[#D4BC85]">SG FINANCE</p>
+        <p className="text-sm text-slate-300">Loading authorized workspace…</p>
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -20,8 +35,15 @@ export default function App() {
       <SiteProvider>
         <BrowserRouter>
           <Routes>
-            {/* Separate Secure Admin Area */}
-            <Route path="/admin" element={<AdminPage />} />
+            {/* Separate Secure Admin Area (Code-Split) */}
+            <Route
+              path="/admin"
+              element={
+                <Suspense fallback={<AdminLoadingFallback />}>
+                  <AdminPage />
+                </Suspense>
+              }
+            />
 
             {/* Public SG FINANCE Website */}
             <Route element={<PublicLayout />}>

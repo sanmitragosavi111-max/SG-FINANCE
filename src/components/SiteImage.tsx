@@ -23,9 +23,9 @@ export function SiteImage({
       <div
         role="img"
         aria-label={alt}
-        className={`bg-gradient-to-br from-[#0A1628] via-[#12233D] to-[#070E1A] flex flex-col items-center justify-center p-8 text-center ${className}`}
+        className={`bg-gradient-to-br from-[#0B1628] via-[#101F35] to-[#0B1628] flex flex-col items-center justify-center p-8 text-center ${className}`}
       >
-        <Shield className="w-8 h-8 text-[#D4AF5A] mb-3" strokeWidth={1.5} aria-hidden="true" />
+        <Shield className="w-8 h-8 text-[#D4BC85] mb-3" strokeWidth={1.5} aria-hidden="true" />
         <p className="font-display text-lg text-white">{fallbackTitle}</p>
         <p className="text-xs text-slate-300 mt-1">Pune, Maharashtra</p>
       </div>
