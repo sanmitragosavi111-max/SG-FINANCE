@@ -16,6 +16,8 @@ import { sendWhatsAppCloudTemplateNotification } from './src/server/whatsappClou
 import { signNotifyToken, verifyNotifyToken } from './src/server/notifyToken.ts';
 import { verifyAuthorizedAdminToken } from './src/server/firebaseAuthVerify.ts';
 import type { EnquiryNotificationPayload } from './src/utils/enquiryNotifications.ts';
+import { sanitizeChatHistory } from './src/server/chatbotKnowledge.ts';
+import { generateSgFinanceChatReply } from './src/server/chatService.ts';
 
 dotenv.config();
 
@@ -69,6 +71,7 @@ interface ServerNotificationRecord {
 
 const ipRateBuckets = new Map<string, RateBucket>();
 const notifyIpRateBuckets = new Map<string, RateBucket>();
+const chatIpRateBuckets = new Map<string, RateBucket>();
 const mobileCooldowns = new Map<string, number>();
 const serverNotificationLog = new Map<string, ServerNotificationRecord>();
 const inFlightNotifications = new Set<string>();
@@ -76,6 +79,7 @@ const inFlightNotifications = new Set<string>();
 const RATE_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const MAX_ENQUIRIES_PER_IP = 8;
 const MAX_NOTIFY_PER_IP = 12;
+const MAX_CHAT_PER_IP = 40;
 const MOBILE_COOLDOWN_MS = 2 * 60 * 1000; // 2 minutes duplicate guard
 const MAX_BUCKET_ENTRIES = 5000;
 const VALID_DOC_ID_REGEX = /^[a-zA-Z0-9_-]{1,128}$/;
@@ -99,6 +103,11 @@ function cleanupBuckets(now: number): void {
       notifyIpRateBuckets.delete(key);
     }
   }
+  for (const [key, bucket] of chatIpRateBuckets.entries()) {
+    if (bucket.resetAt <= now) {
+      chatIpRateBuckets.delete(key);
+    }
+  }
   for (const [mobile, expiresAt] of mobileCooldowns.entries()) {
     if (expiresAt <= now) {
       mobileCooldowns.delete(mobile);
@@ -106,6 +115,7 @@ function cleanupBuckets(now: number): void {
   }
   trimMapCapacity(ipRateBuckets, MAX_BUCKET_ENTRIES);
   trimMapCapacity(notifyIpRateBuckets, MAX_BUCKET_ENTRIES);
+  trimMapCapacity(chatIpRateBuckets, MAX_BUCKET_ENTRIES);
   trimMapCapacity(mobileCooldowns, MAX_BUCKET_ENTRIES);
   trimMapCapacity(serverNotificationLog, MAX_BUCKET_ENTRIES);
 }
@@ -149,7 +159,7 @@ async function startServer(): Promise<void> {
     next();
   });
 
-  app.use(express.json({ limit: '16kb' }));
+  app.use(express.json({ limit: '32kb' }));
 
   // Health endpoint
   app.get('/api/health', (_req: Request, res: Response) => {
@@ -489,6 +499,66 @@ async function startServer(): Promise<void> {
     res.json({
       ok: emailResult.ok,
       ...record,
+    });
+  });
+
+  // Server-side AI customer assistant endpoint (Gemini via @google/genai, server-only API key)
+  app.post('/api/chat', async (req: Request, res: Response) => {
+    const now = Date.now();
+    cleanupBuckets(now);
+
+    const ip = req.ip || 'unknown';
+    const currentBucket = chatIpRateBuckets.get(ip);
+    if (currentBucket && currentBucket.resetAt > now && currentBucket.count >= MAX_CHAT_PER_IP) {
+      res.status(429).json({
+        ok: false,
+        code: 'RATE_LIMITED',
+        message:
+          'You have sent several messages in a short time. Please wait a few minutes, submit an enquiry, or chat with us directly on WhatsApp (+91 7038391002).',
+      });
+      return;
+    }
+
+    const body = req.body && typeof req.body === 'object' ? req.body : {};
+    const messages = sanitizeChatHistory(body.messages);
+    if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
+      res.status(400).json({
+        ok: false,
+        code: 'INVALID_CHAT_REQUEST',
+        message: 'Please enter a valid message to continue the conversation.',
+      });
+      return;
+    }
+
+    if (currentBucket && currentBucket.resetAt > now) {
+      currentBucket.count += 1;
+    } else {
+      chatIpRateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+      trimMapCapacity(chatIpRateBuckets, MAX_BUCKET_ENTRIES);
+    }
+
+    const pagePath =
+      typeof body.pagePath === 'string' && body.pagePath.startsWith('/')
+        ? body.pagePath.slice(0, 80)
+        : '/';
+
+    const result = await generateSgFinanceChatReply(messages, pagePath);
+    if (!result.ok) {
+      res.status(result.status).json({
+        ok: false,
+        code: result.code,
+        message: result.message,
+      });
+      return;
+    }
+
+    res.json({
+      ok: true,
+      reply: result.data.reply,
+      suggestEnquiry: result.data.suggestEnquiry,
+      suggestedRequirement: result.data.suggestedRequirement,
+      extractedAmount: result.data.extractedAmount,
+      extractedCity: result.data.extractedCity,
     });
   });
 

@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { FloatingWhatsApp } from './FloatingWhatsApp';
+import { FinanceAssistantWidget } from './FinanceAssistantWidget';
 import { MobileContactBar } from './MobileContactBar';
 
 export function PublicLayout() {
@@ -35,6 +36,7 @@ export function PublicLayout() {
         <Footer />
       </div>
       <FloatingWhatsApp />
+      <FinanceAssistantWidget />
       <MobileContactBar />
     </div>
   );
